@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книга рецептов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Книга рецептов</h1>
+
+        <!-- Форма фильтрации по ингредиенту -->
+        <form action="/filter" method="POST" class="mb-4">
+            <div class="mb-3">
+                <label for="ingredient" class="form-label">Фильтровать по ингредиенту:</label>
+                <input type="text" id="ingredient" name="ingredient" class="form-control" placeholder="Введите ингредиент">
+            </div>
+            <button type="submit" class="btn btn-primary">Фильтровать</button>
+        </form>
+
+        <!-- Кнопка добавления рецепта -->
+        <h2>Добавить рецепт</h2>
+        <a href="/add_recipe" class="btn btn-success mb-4">Добавить новый рецепт</a>
+
+        <!-- Все рецепты -->
+        <h2>Все рецепты:</h2>
+        <div class="row">
+            {% for recipe in recipes %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        {% if recipe.photo %}
+                            <img src="{{ recipe.photo }}" class="card-img-top" alt="{{ recipe.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ recipe.title }}</h5>
+                            <p class="card-text"><strong>Ингредиенты:</strong> {{ recipe.ingredients }}</p>
+                            <p class="card-text"><strong>Инструкция:</strong> {{ recipe.instructions }}</p>
+
+                            <p><strong>Рейтинг:</strong> 
+                                {% if recipe.average_rating is not none %}
+                                    {{ recipe.average_rating | round(1) }} / 5
+                                {% else %}
+                                    Нет рейтинга
+                                {% endif %}
+                            </p>
+                            
+
+                            <h6>Комментарии:</h6>
+                            <ul>
+                                {% for comment in recipe.comments %}
+                                    <li><strong>{{ comment.user_id }}:</strong> {{ comment.content }} ({{ comment.created_at }})</li>
+                                {% else %}
+                                    <li>Нет комментариев</li>
+                                {% endfor %}
+                            </ul>
+
+                            <form method="POST" action="{{ url_for('add_comment', recipe_id=recipe.id) }}">
+                                <textarea name="comment" placeholder="Оставьте комментарий" class="form-control"></textarea>
+                                <button type="submit" class="btn btn-primary mt-2">Добавить комментарий</button>
+                            </form>
+
+                            <form method="POST" action="{{ url_for('add_rating', recipe_id=recipe.id) }}" class="mt-3">
+                                <label for="rating">Рейтинг (1-5):</label>
+                                <input type="number" name="rating" id="rating" min="1" max="5" class="form-control" required>
+                                <button type="submit" class="btn btn-primary mt-2">Оценить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить рецепт</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Добавить рецепт</h1>
+    <form action="/add_recipe" method="POST" enctype="multipart/form-data">
+        <label for="title">Название рецепта:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="ingredients">Ингредиенты:</label>
+        <textarea id="ingredients" name="ingredients" required></textarea>
+
+        <label for="instructions">Инструкция:</label>
+        <textarea id="instructions" name="instructions" required></textarea>
+
+        <label for="photo">Фото (опционально):</label>
+        <input type="file" id="photo" name="photo">
+
+        <button type="submit">Добавить рецепт</button>
+    </form>
+
+    <a href="/">Вернуться к рецептам</a>
+</body>
+</html>
